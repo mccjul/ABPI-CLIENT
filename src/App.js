@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Loadable from 'react-loadable';
-import { Navbar, Nav, MenuItem, NavDropdown } from 'react-bootstrap'
-
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
+import { Navbar, Nav, MenuItem, NavDropdown } from 'react-bootstrap';
 
 const Loading = ({ error, pastDelay }) => {
   if (error) {
@@ -18,13 +15,13 @@ const Loading = ({ error, pastDelay }) => {
 
 const Home = Loadable({
   loader: () => import('./routes/Home'),
-  loading: Loading,
+  loading: Loading
 });
 
 const Oncall = Loadable({
   loader: () => import('./routes/Oncall'),
-  loading: Loading,
-})
+  loading: Loading
+});
 
 class App extends Component {
   render() {
