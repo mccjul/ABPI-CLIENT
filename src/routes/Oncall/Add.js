@@ -37,7 +37,7 @@ class Add extends Component {
           <br />
           <Button
             bsStyle="success"
-            bsClass="btn center-block"
+            className="center-block"
             onClick={() =>
               this.setState({
                 dateCollection: [...this.state.dateCollection, '']
@@ -73,7 +73,7 @@ class Sched extends Component {
   }
   render() {
     return (
-      <Form inline key={this.props.key}>
+      <Form style={{ textAlign: 'center' }} inline key={this.props.key}>
         <FormGroup controlId="formInlineName">
           <Typeahead
             onChange={name => {
@@ -82,7 +82,7 @@ class Sched extends Component {
             options={['julian', 'bob']}
             selected={this.state.selected}
           />
-        </FormGroup>
+        </FormGroup>{' '}
         <FormGroup controlId="formInlineDate">
           <DateRangePicker
             startDate={this.state.startDate}
