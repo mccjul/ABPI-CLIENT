@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import { Button, Glyphicon, ButtonToolbar } from 'react-bootstrap';
-import { get, post } from '../../utils/api';
+import { get } from '../../utils/api';
 import Add from './Add';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import events from './events';
 
 BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment));
 
@@ -14,28 +13,53 @@ class Oncall extends Component {
     super(props, context);
 
     this.state = {
-      show: false
+      show: false,
+      events: []
     };
     this.show = this.show.bind(this);
+    this.hide = this.hide.bind(this);
   }
   async componentDidMount() {
-    // let t = await get("");
-    // console.log(t);
-    // let b = await post("", {});
-    // console.log(b);
+    let events = await get('oncall');
+
+    this.setState({
+      events: events.map(elm => ({
+        id: elm.id,
+        title: elm.name,
+        allDay: true,
+        start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
+        end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())
+      }))
+    });
   }
   show() {
-    this.setState({ show: true });
+    this.setState({
+      show: true
+    });
+  }
+  async hide() {
+    let events = await get('oncall');
+    console.log(events);
+    this.setState({
+      show: false,
+      events: events.map(elm => ({
+        id: elm.id,
+        title: elm.name,
+        allDay: true,
+        start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
+        end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())
+      }))
+    });
   }
   render() {
     return (
       <div className="container">
         <BigCalendar
-          events={events}
+          events={this.state.events}
           step={60}
           views={['month']}
           showMultiDayTimes
-          defaultDate={new Date(2015, 3, 1)}
+          defaultDate={new Date(moment().format())}
           components={{
             toolbar: Toolbar(
               <Button onClick={this.show}>
@@ -44,10 +68,7 @@ class Oncall extends Component {
             )
           }}
         />
-        <Add
-          show={this.state.show}
-          hide={() => this.setState({ show: false })}
-        />
+        <Add show={this.state.show} hide={this.hide} />
       </div>
     );
   }

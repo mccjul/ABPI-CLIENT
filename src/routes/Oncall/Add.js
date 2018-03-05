@@ -89,8 +89,8 @@ class Add extends Component {
     });
     this.props.hide();
   }
-  save() {
-    post(
+  async save() {
+    await post(
       'oncall',
       this.state.dateCollection.map(elm => ({
         name: elm.name[0],
