@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import { Button, Glyphicon, ButtonToolbar } from 'react-bootstrap';
+import { get, post } from '../../utils/api';
 import Add from './Add';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import events from './events';
@@ -16,6 +17,12 @@ class Oncall extends Component {
       show: false
     };
     this.show = this.show.bind(this);
+  }
+  async componentDidMount() {
+    // let t = await get("");
+    // console.log(t);
+    // let b = await post("", {});
+    // console.log(b);
   }
   show() {
     this.setState({ show: true });

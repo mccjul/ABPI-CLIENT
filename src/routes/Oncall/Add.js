@@ -2,19 +2,23 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, FormGroup, Glyphicon } from 'react-bootstrap';
 import { DateRangePicker } from 'react-dates';
 import { Typeahead } from 'react-bootstrap-typeahead';
-//import moment from 'moment'
+import { post } from '../../utils/api';
 
 class Add extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dateCollection: ['']
+      dateCollection: [
+        {
+          startDate: null,
+          endDate: null,
+          name: null
+        }
+      ]
     };
     this.close = this.close.bind(this);
-  }
-  close() {
-    this.setState({ dateCollection: [''] });
-    this.props.hide();
+    this.save = this.save.bind(this);
+    this.importExcel = this.importExcel.bind(this);
   }
   render() {
     return (
@@ -26,11 +30,14 @@ class Add extends Component {
           <h4>Create Schedual</h4>
           {this.state.dateCollection.map((elm, i) => (
             <Sched
-              onChange={shed =>
+              onChange={shed => {
+                let data = this.state.dateCollection.slice();
+                data[i] = shed;
                 this.setState({
-                  dateCollection: [...this.dateCollection[i]]
-                })
-              }
+                  dateCollection: data
+                });
+              }}
+              entry={this.state.dateCollection[i]}
               key={i}
             />
           ))}
@@ -40,7 +47,14 @@ class Add extends Component {
             className="center-block"
             onClick={() =>
               this.setState({
-                dateCollection: [...this.state.dateCollection, '']
+                dateCollection: [
+                  ...this.state.dateCollection,
+                  {
+                    startDate: null,
+                    endDate: null,
+                    name: null
+                  }
+                ]
               })
             }
           >
@@ -48,10 +62,14 @@ class Add extends Component {
           </Button>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="info" className="pull-left" onClick={this.close}>
+          <Button
+            bsStyle="info"
+            className="pull-left"
+            onClick={this.importExcel}
+          >
             Import Excel
           </Button>
-          <Button bsStyle="success" onClick={this.close}>
+          <Button bsStyle="success" onClick={this.save}>
             Save
           </Button>
           <Button onClick={this.close}>Close</Button>
@@ -59,38 +77,62 @@ class Add extends Component {
       </Modal>
     );
   }
+  close() {
+    this.setState({
+      dateCollection: [
+        {
+          startDate: null,
+          endDate: null,
+          name: null
+        }
+      ]
+    });
+    this.props.hide();
+  }
+  save() {
+    post(
+      'oncall',
+      this.state.dateCollection.map(elm => ({
+        name: elm.name[0],
+        startDate: elm.startDate.format('DD-MM-YYYY'),
+        endDate: elm.endDate.format('DD-MM-YYYY')
+      }))
+    );
+    this.close();
+  }
+  importExcel() {
+    this.close();
+  }
 }
 
 class Sched extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      focusedInput: null,
-      startDate: null,
-      endDate: null,
-      name: ''
+      focusedInput: null
     };
   }
   render() {
     return (
-      <Form style={{ textAlign: 'center' }} inline key={this.props.key}>
+      <Form style={{ textAlign: 'center' }} inline>
         <FormGroup controlId="formInlineName">
           <Typeahead
             onChange={name => {
-              this.setState({ name });
+              this.props.onChange({ ...this.props.entry, name });
             }}
             options={['julian', 'bob']}
-            selected={this.state.selected}
+            selected={this.props.entry.name}
           />
         </FormGroup>{' '}
         <FormGroup controlId="formInlineDate">
           <DateRangePicker
-            startDate={this.state.startDate}
+            startDate={this.props.entry.startDate}
             startDateId="your_unique_start_date_id"
-            endDate={this.state.endDate}
+            endDate={this.props.entry.endDate}
             endDateId="your_unique_end_date_id"
             onDatesChange={({ startDate, endDate }) =>
-              this.setState({ startDate, endDate })
+              //this.setState({ startDate, endDate })
+              this.props.onChange({ ...this.props.entry, startDate, endDate })
             }
             focusedInput={this.state.focusedInput}
             onFocusChange={focusedInput => this.setState({ focusedInput })}
