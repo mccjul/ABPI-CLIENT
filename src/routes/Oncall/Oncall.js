@@ -25,7 +25,7 @@ class Oncall extends Component {
     this.setState({
       events: events.map(elm => ({
         id: elm.id,
-        title: elm.name,
+        title: elm.user.real_name,
         allDay: true,
         start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
         end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())
@@ -39,12 +39,11 @@ class Oncall extends Component {
   }
   async hide() {
     let events = await get('oncall');
-    console.log(events);
     this.setState({
       show: false,
       events: events.map(elm => ({
         id: elm.id,
-        title: elm.name,
+        title: elm.user.real_name,
         allDay: true,
         start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
         end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())

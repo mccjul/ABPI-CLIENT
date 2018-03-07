@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, FormGroup, Glyphicon } from 'react-bootstrap';
 import { DateRangePicker } from 'react-dates';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import { post } from '../../utils/api';
+import { post, get } from '../../utils/api';
 
 class Add extends Component {
   constructor(props) {
@@ -12,13 +12,17 @@ class Add extends Component {
         {
           startDate: null,
           endDate: null,
-          name: null
+          user: null
         }
-      ]
+      ],
+      options: []
     };
     this.close = this.close.bind(this);
     this.save = this.save.bind(this);
     this.importExcel = this.importExcel.bind(this);
+  }
+  async componentDidMount() {
+    this.setState({ options: await get('oncall/users') });
   }
   render() {
     return (
@@ -39,6 +43,7 @@ class Add extends Component {
               }}
               entry={this.state.dateCollection[i]}
               key={i}
+              options={this.state.options}
             />
           ))}
           <br />
@@ -52,7 +57,7 @@ class Add extends Component {
                   {
                     startDate: null,
                     endDate: null,
-                    name: null
+                    user: null
                   }
                 ]
               })
@@ -83,7 +88,7 @@ class Add extends Component {
         {
           startDate: null,
           endDate: null,
-          name: null
+          user: null
         }
       ]
     });
@@ -93,7 +98,7 @@ class Add extends Component {
     await post(
       'oncall',
       this.state.dateCollection.map(elm => ({
-        name: elm.name[0],
+        user: elm.user[0],
         startDate: elm.startDate.format('DD-MM-YYYY'),
         endDate: elm.endDate.format('DD-MM-YYYY')
       }))
@@ -118,10 +123,11 @@ class Sched extends Component {
         <FormGroup controlId="formInlineName">
           <Typeahead
             onChange={name => {
-              this.props.onChange({ ...this.props.entry, name });
+              this.props.onChange({ ...this.props.entry, user: name });
             }}
-            options={['julian', 'bob']}
+            options={this.props.options}
             selected={this.props.entry.name}
+            labelKey={option => `${option.real_name}`}
           />
         </FormGroup>{' '}
         <FormGroup controlId="formInlineDate">

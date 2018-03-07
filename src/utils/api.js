@@ -19,7 +19,6 @@ export const post = async (path, payload) => {
       },
       body: JSON.stringify(payload)
     });
-    console.log(result, API_PATH.concat(path), JSON.stringify(payload));
     return result.json();
   } catch (err) {
     console.log(err);
