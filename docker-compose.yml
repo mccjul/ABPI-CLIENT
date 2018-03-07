@@ -4,6 +4,7 @@ services:
 
   abpi-client:
     container_name: abpi-client
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
