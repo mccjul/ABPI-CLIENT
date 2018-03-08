@@ -3,7 +3,9 @@ const API_PATH = 'http://localhost:8080/';
 export const get = async path => {
   try {
     let result = await fetch(API_PATH.concat(path));
-    return result.json();
+    if (result.status >= 200 && result.status < 300) {
+      return result.json();
+    }
   } catch (err) {
     console.log(err);
   }

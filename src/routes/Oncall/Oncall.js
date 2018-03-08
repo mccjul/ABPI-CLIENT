@@ -5,7 +5,9 @@ import { Button, Glyphicon, ButtonToolbar } from 'react-bootstrap';
 import { get } from '../../utils/api';
 import Add from './Add';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import 'moment/locale/en-gb';
 
+moment.locale('en-gb');
 BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment));
 
 class Oncall extends Component {
@@ -23,13 +25,15 @@ class Oncall extends Component {
     let events = await get('oncall');
 
     this.setState({
-      events: events.map(elm => ({
-        id: elm.id,
-        title: elm.user.real_name,
-        allDay: true,
-        start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
-        end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())
-      }))
+      events: events
+        ? events.map(elm => ({
+            id: elm.id,
+            title: elm.user.real_name,
+            allDay: true,
+            start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
+            end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())
+          }))
+        : []
     });
   }
   show() {
@@ -41,13 +45,15 @@ class Oncall extends Component {
     let events = await get('oncall');
     this.setState({
       show: false,
-      events: events.map(elm => ({
-        id: elm.id,
-        title: elm.user.real_name,
-        allDay: true,
-        start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
-        end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())
-      }))
+      events: events
+        ? events.map(elm => ({
+            id: elm.id,
+            title: elm.user.real_name,
+            allDay: true,
+            start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
+            end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())
+          }))
+        : []
     });
   }
   render() {
@@ -59,6 +65,7 @@ class Oncall extends Component {
           views={['month']}
           showMultiDayTimes
           defaultDate={new Date(moment().format())}
+          selectable="ignoreEvents"
           components={{
             toolbar: Toolbar(
               <Button onClick={this.show}>

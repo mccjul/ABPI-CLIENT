@@ -100,7 +100,7 @@ class Add extends Component {
       this.state.dateCollection.map(elm => ({
         user: elm.user[0],
         startDate: elm.startDate.format('DD-MM-YYYY'),
-        endDate: elm.endDate.format('DD-MM-YYYY')
+        endDate: elm.endDate.add(1, 'days').format('DD-MM-YYYY')
       }))
     );
     this.close();
