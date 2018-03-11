@@ -26,3 +26,28 @@ export const post = async (path, payload) => {
     console.log(err);
   }
 };
+
+export const put = async (path, payload) => {
+  try {
+    await fetch(API_PATH.concat(path), {
+      method: 'put',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const del = async (path, id) => {
+  try {
+    await fetch(API_PATH.concat(path, '/', id), {
+      method: 'delete'
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};

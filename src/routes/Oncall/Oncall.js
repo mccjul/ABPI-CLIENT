@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Button, Glyphicon, ButtonToolbar } from 'react-bootstrap';
 import { get } from '../../utils/api';
 import Add from './Add';
+import Edit from './Edit';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'moment/locale/en-gb';
 
@@ -15,10 +16,13 @@ class Oncall extends Component {
     super(props, context);
 
     this.state = {
-      show: false,
-      events: []
+      show_add: false,
+      show_edit: false,
+      events: [],
+      edit_event: {}
     };
-    this.show = this.show.bind(this);
+    this.show_add = this.show_add.bind(this);
+    this.show_edit = this.show_edit.bind(this);
     this.hide = this.hide.bind(this);
   }
   async componentDidMount() {
@@ -30,28 +34,37 @@ class Oncall extends Component {
             id: elm.id,
             title: elm.user.real_name,
             allDay: true,
+            user: elm.user,
             start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
-            end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())
+            end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format()),
+            reminder_access: elm.reminder_access,
+            reminder_oncall: elm.reminder_oncall
           }))
         : []
     });
   }
-  show() {
-    this.setState({
-      show: true
-    });
+  show_add() {
+    this.setState({ show_add: true });
+  }
+  show_edit(event) {
+    this.setState({ show_edit: true, edit_event: event });
   }
   async hide() {
     let events = await get('oncall');
     this.setState({
-      show: false,
+      show_add: false,
+      show_edit: false,
+      edit_event: {},
       events: events
         ? events.map(elm => ({
             id: elm.id,
             title: elm.user.real_name,
             allDay: true,
+            user: elm.user,
             start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
-            end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format())
+            end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format()),
+            reminder_access: elm.reminder_access,
+            reminder_oncall: elm.reminder_oncall
           }))
         : []
     });
@@ -65,16 +78,22 @@ class Oncall extends Component {
           views={['month']}
           showMultiDayTimes
           defaultDate={new Date(moment().format())}
-          selectable="ignoreEvents"
+          selectable
+          onSelectEvent={event => this.show_edit(event)}
           components={{
             toolbar: Toolbar(
-              <Button onClick={this.show}>
+              <Button onClick={this.show_add}>
                 <Glyphicon glyph="plus" />
               </Button>
             )
           }}
         />
-        <Add show={this.state.show} hide={this.hide} />
+        <Add show={this.state.show_add} hide={this.hide} />
+        <Edit
+          show={this.state.show_edit}
+          hide={this.hide}
+          event={this.state.edit_event}
+        />
       </div>
     );
   }

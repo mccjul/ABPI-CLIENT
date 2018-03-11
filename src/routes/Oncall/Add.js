@@ -21,9 +21,11 @@ class Add extends Component {
     this.save = this.save.bind(this);
     this.importExcel = this.importExcel.bind(this);
   }
+
   async componentDidMount() {
     this.setState({ options: await get('oncall/users') });
   }
+
   render() {
     return (
       <Modal show={this.props.show} onHide={this.close}>
@@ -71,6 +73,7 @@ class Add extends Component {
             bsStyle="info"
             className="pull-left"
             onClick={this.importExcel}
+            disabled={true}
           >
             Import Excel
           </Button>
@@ -82,6 +85,7 @@ class Add extends Component {
       </Modal>
     );
   }
+
   close() {
     this.setState({
       dateCollection: [
@@ -94,6 +98,7 @@ class Add extends Component {
     });
     this.props.hide();
   }
+
   async save() {
     await post(
       'oncall',
@@ -137,7 +142,6 @@ class Sched extends Component {
             endDate={this.props.entry.endDate}
             endDateId="your_unique_end_date_id"
             onDatesChange={({ startDate, endDate }) =>
-              //this.setState({ startDate, endDate })
               this.props.onChange({ ...this.props.entry, startDate, endDate })
             }
             focusedInput={this.state.focusedInput}
