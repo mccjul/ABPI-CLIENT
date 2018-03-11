@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "auth0-js": "^9.3.3",
     "bootstrap": "3",
     "husky": "^0.14.3",
     "lint-staged": "^7.0.0",
