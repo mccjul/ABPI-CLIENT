@@ -77,13 +77,25 @@ class Add extends Component {
           >
             Import Excel
           </Button>
-          <Button bsStyle="success" onClick={this.save}>
+          <Button
+            bsStyle="success"
+            disabled={this._disable_logic()}
+            onClick={this.save}
+          >
             Save
           </Button>
           <Button onClick={this.close}>Close</Button>
         </Modal.Footer>
       </Modal>
     );
+  }
+
+  _disable_logic() {
+    return this.state.dateCollection.findIndex(
+      elm => elm.user === null || elm.startDate === null || elm.endDate === null
+    ) !== -1
+      ? true
+      : false;
   }
 
   close() {
@@ -104,8 +116,8 @@ class Add extends Component {
       'oncall',
       this.state.dateCollection.map(elm => ({
         user: elm.user[0],
-        startDate: elm.startDate.format('DD-MM-YYYY'),
-        endDate: elm.endDate.add(1, 'days').format('DD-MM-YYYY')
+        startDate: elm.startDate.toDate(),
+        endDate: elm.endDate.add(1, 'days').toDate()
       }))
     );
     this.close();

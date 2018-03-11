@@ -14,7 +14,6 @@ BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment));
 class Oncall extends Component {
   constructor(props, context) {
     super(props, context);
-
     this.state = {
       show_add: false,
       show_edit: false,
@@ -35,8 +34,8 @@ class Oncall extends Component {
             title: elm.user.real_name,
             allDay: true,
             user: elm.user,
-            start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
-            end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format()),
+            start: moment(elm.startDate).toDate(),
+            end: moment(elm.endDate).toDate(),
             reminder_access: elm.reminder_access,
             reminder_oncall: elm.reminder_oncall
           }))
@@ -61,8 +60,8 @@ class Oncall extends Component {
             title: elm.user.real_name,
             allDay: true,
             user: elm.user,
-            start: new Date(moment(elm.startDate, 'DD-MM-YYYY').format()),
-            end: new Date(moment(elm.endDate, 'DD-MM-YYYY').format()),
+            start: moment(elm.startDate).toDate(),
+            end: moment(elm.endDate).toDate(),
             reminder_access: elm.reminder_access,
             reminder_oncall: elm.reminder_oncall
           }))
@@ -70,6 +69,12 @@ class Oncall extends Component {
     });
   }
   render() {
+    // console.log(
+    //   moment()
+    //     .add(2, "week")
+    //     .add(2, "day")
+    //     .format()
+    // );
     return (
       <div className="container">
         <BigCalendar

@@ -77,8 +77,8 @@ class Edit extends Component {
   async save() {
     await put('oncall/'.concat(this.props.event.id), {
       user: this.props.event.user,
-      startDate: this.state.startDate.format('DD-MM-YYYY'),
-      endDate: this.state.endDate.add(1, 'days').format('DD-MM-YYYY'),
+      startDate: this.state.startDate.toDate(),
+      endDate: this.state.endDate.add(1, 'days').toDate(),
       reminder_access: this.props.event.reminder_access,
       reminder_oncall: this.props.event.reminder_oncall
     });
